@@ -18,6 +18,40 @@ public class PvpDropsConfig {
     /** Master switch. false = the mod does nothing (plain vanilla keepInventory). */
     public boolean enabled = true;
 
+    /** Being hit by a player starts "combat mode" (timer, boss bar, ding sound). */
+    public boolean combatModeEnabled = true;
+
+    /** How long combat mode lasts after the last hit by a player, in seconds. */
+    public double combatDurationSeconds = 10;
+
+    /** Dying while in combat mode (from ANY cause) loses your stuff. */
+    public boolean dropOnAnyDeathWhileInCombat = true;
+
+    /** Being killed by a player loses your stuff even if combat mode somehow isn't active. */
+    public boolean dropWhenKilledByPlayer = true;
+
+    /** Also put the attacker into combat mode when they hit someone. */
+    public boolean tagAttacker = false;
+
+    /** Show the "COMBAT MODE <seconds>" boss bar at the top of the screen. */
+    public boolean showBossBar = true;
+
+    /** Boss bar color: pink, blue, red, green, yellow, purple or white. */
+    public String bossBarColor = "red";
+
+    /** Boss bar style: progress, notched_6, notched_10, notched_12 or notched_20. */
+    public String bossBarStyle = "progress";
+
+    /** Play a ding every second while in combat mode. */
+    public boolean playSound = true;
+
+    /** Sound id for the ding. Default is the arrow-hits-player "ding" (not the XP sound). */
+    public String soundId = "minecraft:entity.arrow.hit_player";
+
+    public float soundVolume = 1.0F;
+
+    public float soundPitch = 1.0F;
+
     /** Drop the main inventory + hotbar (36 slots) when killed by a player. */
     public boolean dropMainInventory = true;
 

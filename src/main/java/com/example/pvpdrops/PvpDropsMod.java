@@ -3,6 +3,7 @@ package com.example.pvpdrops;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.component.EnchantmentEffectComponentTypes;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.ExperienceOrbEntity;
@@ -37,16 +38,45 @@ public class PvpDropsMod implements ModInitializer {
                             return 1;
                         }))));
 
+        // Every server tick: update combat boss bars, dings and expiry.
+        ServerTickEvents.END_SERVER_TICK.register(CombatManager::tick);
+
+        // A player hit you -> combat mode. Fires before the damage is applied (and before any death check).
+        ServerLivingEntityEvents.ALLOW_DAMAGE.register((entity, source, amount) -> {
+            PvpDropsConfig cfg = config;
+            if (cfg.enabled && cfg.combatModeEnabled && amount > 0
+                    && entity instanceof ServerPlayerEntity victim
+                    && source.getAttacker() instanceof ServerPlayerEntity attacker
+                    && attacker != victim
+                    && victim.getServer() != null) {
+                long now = victim.getServer().getTicks();
+                CombatManager.tag(victim, now, cfg);
+                if (cfg.tagAttacker) {
+                    CombatManager.tag(attacker, now, cfg);
+                }
+            }
+            return true; // never cancel the damage
+        });
+
         // Fires on the server just before a player's death is processed
         // (before vanilla decides what to drop / keep).
         ServerLivingEntityEvents.ALLOW_DEATH.register((entity, source, damageAmount) -> {
-            PvpDropsConfig cfg = config;
-            if (cfg.enabled
-                    && entity instanceof ServerPlayerEntity victim
-                    && victim.getServerWorld().getGameRules().getBoolean(GameRules.KEEP_INVENTORY)
-                    && source.getAttacker() instanceof PlayerEntity killer
-                    && killer != victim) {
-                dropStuff(victim, cfg);
+            if (entity instanceof ServerPlayerEntity victim) {
+                PvpDropsConfig cfg = config;
+                if (cfg.enabled
+                        && victim.getServerWorld().getGameRules().getBoolean(GameRules.KEEP_INVENTORY)
+                        && victim.getServer() != null) {
+                    boolean killedByPlayer = cfg.dropWhenKilledByPlayer
+                            && source.getAttacker() instanceof PlayerEntity killer
+                            && killer != victim;
+                    boolean inCombat = cfg.combatModeEnabled
+                            && cfg.dropOnAnyDeathWhileInCombat
+                            && CombatManager.isInCombat(victim, victim.getServer().getTicks());
+                    if (killedByPlayer || inCombat) {
+                        dropStuff(victim, cfg);
+                    }
+                }
+                CombatManager.clear(victim); // combat mode ends on death
             }
             return true; // never cancel the death
         });
