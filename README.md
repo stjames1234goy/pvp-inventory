@@ -1,5 +1,5 @@
 # PvP Drops (Fabric 1.21.1)
-Keep-inventory stays on for every death EXCEPT when you're killed by another player: then you drop your whole inventory (armor + offhand included; Curse of Vanishing items are destroyed like vanilla). XP is still kept.
+Keep-inventory stays on for every death EXCEPT when you're killed by another player: then you drop your whole inventory (armor + offhand included; Curse of Vanishing items are destroyed like vanilla). XP is also dropped but is configurable in the config.
 
 ## Build on GitHub (no local setup)
 1. Create a new GitHub repo and upload ALL files in this folder (including the hidden `.github` folder).
