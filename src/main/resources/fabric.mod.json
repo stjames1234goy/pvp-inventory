@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "id": "pvpdrops",
+  "version": "${version}",
+  "name": "PvP Drops",
+  "description": "With keepInventory on, you keep your items on any death except when you are killed by another player, in which case you drop everything.",
+  "authors": ["You"],
+  "license": "MIT",
+  "environment": "*",
+  "entrypoints": {
+    "main": ["com.example.pvpdrops.PvpDropsMod"]
+  },
+  "depends": {
+    "fabricloader": ">=0.16.0",
+    "minecraft": "~1.21.1",
+    "java": ">=21",
+    "fabric-api": "*"
+  }
+}
