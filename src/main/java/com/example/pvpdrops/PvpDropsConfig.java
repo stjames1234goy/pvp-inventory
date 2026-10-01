@@ -30,8 +30,8 @@ public class PvpDropsConfig {
     /** Being killed by a player loses your stuff even if combat mode somehow isn't active. */
     public boolean dropWhenKilledByPlayer = true;
 
-    /** Also put the attacker into combat mode when they hit someone. */
-    public boolean tagAttacker = false;
+    /** Also put the attacker into combat mode when they hit another player. */
+    public boolean tagAttacker = true;
 
     /** Show the "COMBAT MODE <seconds>" boss bar at the top of the screen. */
     public boolean showBossBar = true;
